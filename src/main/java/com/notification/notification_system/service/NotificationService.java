@@ -4,7 +4,9 @@ import com.notification.notification_system.dto.NotificationRequest;
 import com.notification.notification_system.entity.Notification;
 import com.notification.notification_system.enums.NotificationStatus;
 import com.notification.notification_system.exception.NotificationNotFoundException;
+import com.notification.notification_system.factory.NotificationSenderFactory;
 import com.notification.notification_system.repository.NotificationRepository;
+import com.notification.notification_system.sender.NotificationSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,9 +15,11 @@ import java.util.*;
 @Service
 public class NotificationService {
     private final NotificationRepository repository;
+    private final NotificationSenderFactory senderFactory;
 
-    public NotificationService(NotificationRepository repository){
+    public NotificationService(NotificationRepository repository, NotificationSenderFactory senderFactory){
         this.repository=repository;
+        this.senderFactory=senderFactory;
     }
 
     public Notification createNotification(NotificationRequest request){
@@ -30,7 +34,10 @@ public class NotificationService {
         LocalDateTime now = LocalDateTime.now();
         notification.setCreatedAt(now);
         notification.setUpdatedAt(now);
-        return repository.save(notification);
+        Notification savedNotification = repository.save(notification);
+        NotificationSender sender = senderFactory.getSender(request.getChannel());
+        sender.send(savedNotification);
+        return savedNotification;
     }
 
     public List<Notification> getALlNotification(){
