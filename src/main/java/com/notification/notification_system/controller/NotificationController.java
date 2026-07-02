@@ -4,7 +4,6 @@ import com.notification.notification_system.dto.NotificationRequest;
 import com.notification.notification_system.service.NotificationService;
 import com.notification.notification_system.entity.Notification;
 import jakarta.validation.Valid;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
