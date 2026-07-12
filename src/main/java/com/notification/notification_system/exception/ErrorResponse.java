@@ -13,7 +13,7 @@ public class ErrorResponse {
     public ErrorResponse(LocalDateTime timestamp, int status, String message) {
         this.timestamp = timestamp;
         this.status = status;
-        Message = message;
+        this.Message = message;
     }
 
     public LocalDateTime getTimestamp() {
@@ -33,10 +33,10 @@ public class ErrorResponse {
     }
 
     public String getMessage() {
-        return Message;
+        return this.Message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        this.Message = message;
     }
 }
