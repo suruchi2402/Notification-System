@@ -4,22 +4,25 @@ import com.notification.notification_system.dto.NotificationRequest;
 import com.notification.notification_system.entity.Notification;
 import com.notification.notification_system.enums.NotificationStatus;
 import com.notification.notification_system.exception.NotificationNotFoundException;
-import com.notification.notification_system.factory.NotificationSenderFactory;
 import com.notification.notification_system.repository.NotificationRepository;
-import com.notification.notification_system.sender.NotificationSender;
 import org.springframework.stereotype.Service;
-
+import com.notification.notification_system.producer.NotificationProducer;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class NotificationService {
     private final NotificationRepository repository;
-    private final NotificationSenderFactory senderFactory;
+//    private final NotificationSenderFactory senderFactory;
 
-    public NotificationService(NotificationRepository repository, NotificationSenderFactory senderFactory){
+    private final NotificationProducer notificationProducer;
+
+    public NotificationService(NotificationRepository repository,NotificationProducer notificationProducer,
+//                               NotificationSenderFactory senderFactory
+                               NotificationProducer notificationProducer1){
         this.repository=repository;
-        this.senderFactory=senderFactory;
+//        this.senderFactory=senderFactory;
+        this.notificationProducer = notificationProducer1;
     }
 
     public Notification createNotification(NotificationRequest request){
@@ -35,8 +38,9 @@ public class NotificationService {
         notification.setCreatedAt(now);
         notification.setUpdatedAt(now);
         Notification savedNotification = repository.save(notification);
-        NotificationSender sender = senderFactory.getSender(request.getChannel());
-        sender.send(savedNotification);
+        notificationProducer.send(savedNotification);
+//        NotificationSender sender = senderFactory.getSender(request.getChannel());
+//        sender.send(savedNotification);
         return savedNotification;
     }
 
